@@ -10,45 +10,73 @@ origIFS="${IFS}"
 
 
 
-printf "${RED}---------------------(Frontend Controls-11.5,16.4)---------------------\n"
+printf "${YELLOW}=======================================>(Frontend Controls-11.5,16.4)<=======================================>\n"
 printf "${GREEN}---------------------Default Port Scan---------------------\n"
 printf "${NC}\n"
 
-#nmap -sS -sV $1
+nmap -sS -sV $1
 
+printf "${NC}\n"
 printf "${GREEN}---------------------Full Port Scan---------------------\n"
 printf "${NC}\n"
 
-#nmap -p0-65535 $1
+nmap -p0-65535 $1
 
-printf "${RED}---------------------(Frontend Controls-11.8)---------------------\n"
+printf "${NC}\n"
+printf "${YELLOW}=======================================>(Frontend Controls-11.8)<=======================================\n"
 printf "${GREEN}---------------------Insecure ports FTP(21),Telnet(23),SSH(22),RemoteShell(514) check---------------------\n"
 printf "${NC}\n"
 
 nmap -p21,23,22,514 -sV $1
 
-
-printf "${RED}---------------------(Frontend Controls-11.9)---------------------\n"
+printf "${NC}\n"
+printf "${YELLOW}=======================================>(Frontend Controls-11.9)<=======================================\n"
 printf "${GREEN}---------------------Vulnerable SMB(139,445) version check---------------------\n"
 printf "${NC}\n"
 
 nmap -p139,445 --script smb-protocols $1
 
-printf "${RED}---------------------(Frontend Controls-10.2)---------------------\n"
+printf "${NC}\n"
+printf "${YELLOW}=======================================>(Frontend Controls-10.2)<=======================================\n"
 printf "${GREEN}--------------------TLS certificate check---------------------\n"
 printf "${NC}\n"
 
 nmap --script ssl-cert -p443 $1
 
-printf "${RED}---------------------(Frontend Controls-16.12)---------------------\n"
-printf "${GREEN}---------------------Weak TLS cipher check---------------------\n"
+printf "${NC}\n"
+printf "${GREEN}---------------------Sending request via HTTP---------------------\n"
+printf "${NC}\n"
+
+curl -i http://$1 
+
+printf "${NC}\n"
+printf "${YELLOW}=======================================>(Frontend Controls-16.12)<=======================================\n"
+printf "${GREEN}----------------------Weak TLS cipher check----------------------\n"
 printf "${NC}\n"
 
 nmap --script ssl-enum-ciphers -p443 $1
 
-printf "${RED}---------------------(Frontend Controls-14.3,16.15)---------------------\n"
+printf "${NC}\n"
+printf "${YELLOW}=======================================>(Frontend Controls-14.3,16.15)<=======================================\n"
 printf "${GREEN}---------------------Unauthenticated directory enumeration---------------------\n"
 printf "${NC}\n"
 
 dirb https://$1 common.txt
 
+dirb https://$1 big.txt
+
+#dirb https://$1 $2
+
+printf "${NC}\n"
+printf "${YELLOW}=======================================>(Frontend Controls-11.6,14.7,16.14)<=======================================\n"
+printf "${GREEN}---------------------Response Headers---------------------\n"
+printf "${NC}\n"
+
+curl -X HEAD -i https://$1 | awk  '{for(i=1;i<=NF;i++){ if($i~/server:/) $i=sprintf("\033[0;31m%s\033[0;00m",$i)}; print}' 
+
+printf "${NC}\n"
+printf "${YELLOW}=======================================>(Frontend Controls-16.9)<=======================================\n"
+printf "${GREEN}---------------------Response Headers---------------------\n"
+printf "${NC}\n"
+
+curl -X OPTIONS -i https://$1
