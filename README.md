@@ -1,5 +1,5 @@
-# EYG-Automator
+# EYG-Automatorv1.0
 Tool used to automate the testing of frontend controls.
 
-Usage
+Usage:
 $sudo ./EYGAutomator.sh domain.com
