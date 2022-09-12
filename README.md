@@ -1,4 +1,4 @@
-# EYG-Automatorv1.0
+# EYG-Automator-v1.0
 Tool used to automate the testing of frontend controls.
 
 Usage:
