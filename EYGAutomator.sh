@@ -7,9 +7,9 @@ YELLOW='\033[0;33m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 origIFS="${IFS}"
-echo "[+]Usage:- EYGAutomator.sh victim.com"
-echo "[+]Add --unprivileged flag if after victim.com for internal application."
-echo "[+]example:- EYGAutomator.sh victim.com --unprivileged"
+echo "[+]Usage:- ./EYGAutomator.sh victim.com"
+echo "[+]Add --unprivileged flag after victim.com for internal applications."
+echo "[+]example:- ./EYGAutomator.sh victim.com --unprivileged"
 printf "${YELLOW}===========================================>START<===========================================\n"
 printf "${NC}\n"
 
