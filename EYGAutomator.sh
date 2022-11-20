@@ -109,6 +109,7 @@ printf "${NC}\n"
 
 
 #path = $(pwd)
+echo "Clickjacking in progress. Please wait..."
 
 echo '<html><body><iframe src="https://'$1$3'" width="100%" height="80%"></iframe><br><h3>&lt;iframe src="https://'$1$3'" width="100%" height="80%"&gt;</h3></body> </html>' >> "/mnt/c/Users/Username/OneDrive - EY/Documents/2023/CTF/clkjack.html"
 
