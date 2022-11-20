@@ -10,18 +10,19 @@ origIFS="${IFS}"
 echo "[+]Usage:- ./EYGAutomator.sh victim.com"
 echo "[+]Add --unprivileged flag after victim.com for internal applications."
 echo "[+]example:- ./EYGAutomator.sh victim.com --unprivileged"
+echo "[+]Add ':port' a space after --unprivileged flag for port specific applications"
+echo "[+]example:- ./EYGAutomator.sh victim.com --unprivileged :8080"
 printf "${YELLOW}===========================================>START<===========================================\n"
 printf "${NC}\n"
 
 
-echo "\033[0;32m     | __|\ \ / // __|  ___    /_\ | | | ||_   _|/ _ \ |  \/  |  /_\|_   _|/ _ \ | _ \+\n     | _|  \ V /| (_ | |___|  / _ \| |_| |  | | | (_) || |\/| | / _ \ | | | (_) ||   /+\n     |___|  |_|  \___|       /_/ \_\____/   |_|  \___/ |_|  |_|/_/ \_\|_|  \___/ |_|_\;"  
+echo "\033[0;32m     | __|\ \ / // __|  ___    /_\ | | | ||_   _|/ _ \ |  \/  |  /_\|_   _|/ _ \ | _ \+\n     | _|  \ V /| (_ | |___|  / _ \| |_| |  | | | (_) || |\/| | / _ \ | | | (_) ||   /+\n     |___|  |_|  \___|       /_/ \_\____/   |_|  \___/ |_|  |_|/_/ \_\|_|  \___/ |_|_\;"
 
 
- 
-
-
-
+export chrome="/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
 export mynmap="/mnt/c/Program Files (x86)/Nmap/nmap.exe"
+export slow="/mnt/c/Windows/System32/timeout.exe"
+
 
 printf "${NC}\n"
 printf "${YELLOW}===========================================>START<===========================================\n"
@@ -57,17 +58,16 @@ printf "${YELLOW}=======================================>(Frontend Controls-10.2
 printf "${GREEN}--------------------TLS certificate check---------------------\n"
 printf "${NC}\n"
 
-"${mynmap}" --script ssl-cert -p443 $2 $1
+"${mynmap}" --script ssl-cert $2 $1
 
 printf "${NC}\n"
 printf "${GREEN}---------------------Sending request via HTTP---------------------\n"
 printf "${NC}\n"
 
-printf "${RED}Request -> curl -i http://${1}\n"
+#printf "${RED}Request -> curl -i http://${1}\n"
 printf "${NC}\n"
-curl -i http://$1 
 
-
+curl -i http://$1$3
 
 printf "${NC}\n"
 printf "${YELLOW}=======================================>(Frontend Controls-16.12)<=======================================\n"
@@ -81,25 +81,39 @@ printf "${YELLOW}=======================================>(Frontend Controls-14.3
 printf "${GREEN}---------------------Unauthenticated directory enumeration---------------------\n"
 printf "${NC}\n"
 
-dirb -w https://$1 common.txt
+dirb https://$1$3 common.txt -w
 
-dirb -w https://$1 big.txt
+dirb https://$1$3 big.txt -w
 
-#dirb https://$1 $3
+#dirb https://$1 $n
 
 printf "${NC}\n"
 printf "${YELLOW}=======================================>(Frontend Controls-11.6,14.7,16.14)<=======================================\n"
 printf "${GREEN}---------------------Response Headers---------------------\n"
 printf "${NC}\n"
 
-curl -k -X HEAD -i https://$1 | awk  '{for(i=1;i<=NF;i++){ if($i~/server:/) $i=sprintf("\033[0;31m%s\033[0;00m",$i)}; print}' 
+curl -k -X HEAD -i https://$1$3 | awk  '{for(i=1;i<=NF;i++){ if($i~/server:/) $i=sprintf("\033[0;31m%s\033[0;00m",$i)}; print}'
 
 printf "${NC}\n"
 printf "${YELLOW}=======================================>(Frontend Controls-16.9)<=======================================\n"
 printf "${GREEN}---------------------Response Headers---------------------\n"
 printf "${NC}\n"
 
-curl -k -X OPTIONS -i https://$1
+curl -k -X OPTIONS -i https://$1$3
+
+
+printf "${NC}\n"
+printf "${YELLOW}=======================================>(Frontend Controls-9.5)<=======================================\n"
+printf "${GREEN}---------------------Click jacking---------------------\n"
+printf "${NC}\n"
+
+
+#path = $(pwd)
+
+echo '<html><body><iframe src="https://'$1$3'" width="100%" height="80%"></iframe><br><h3>&lt;iframe src="https://'$1$3'" width="100%" height="80%"&gt;</h3></body> </html>' >> "/mnt/c/Users/Username/OneDrive - EY/Documents/2023/CTF/clkjack.html"
+
+"${chrome}" --headless --screenshot="C:\Users\Username\OneDrive - EY\Documents\2023\testnew-1.png" "C:\Users\Username\OneDrive - EY\Documents\2023\CTF\clkjack.html" && "${slow}" 5
 
 printf "${NC}\n"
 printf "${YELLOW}=======================================>END<=======================================\n"
+
