@@ -64,7 +64,7 @@ printf "${NC}\n"
 printf "${GREEN}---------------------Sending request via HTTP---------------------\n"
 printf "${NC}\n"
 
-#printf "${RED}Request -> curl -i http://${1}\n"
+printf "${RED}Request -> curl -i http://${1}\n"
 printf "${NC}\n"
 
 curl -i http://$1$3
